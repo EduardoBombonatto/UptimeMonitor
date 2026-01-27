@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:12
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: uptime_monitor
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: post
+    volumes:
+      - postgres-uptimemonitor:/var/lib/postgresql/data
+    stdin_open: true
+    networks:
+      - uptimeMonitor-network
+
+  spring-app:
+    build:
+      context: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - uptimeMonitor-network
+
+networks:
+  uptimeMonitor-network:
+    driver: bridge
+
+volumes:
+  postgres-uptimemonitor:
+    driver: local
